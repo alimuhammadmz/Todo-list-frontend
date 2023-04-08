@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 
 export default function Header(props) {
     return (
@@ -16,6 +17,7 @@ export default function Header(props) {
                 <a className="nav-link" href="/about">About</a>
               </li>
             </ul>
+            {props.searchBar ?
             <form className="form-inline ml-auto">
               <div className="input-group">
                 <input className="form-control" type="search" placeholder="Search" aria-label="Search" />
@@ -24,7 +26,16 @@ export default function Header(props) {
                 </div>
               </div>
             </form>
+           : ""}
           </div>
         </nav>
       );
+}
+Header.defaultProps ={
+  title: "Provide title"
+}
+
+Header.propTypes = {
+  title: PropTypes.string,
+  searchBar: PropTypes.bool.isRequired
 }
