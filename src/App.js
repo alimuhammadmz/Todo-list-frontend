@@ -67,11 +67,13 @@ function App() {
         const newTodos = [...todos];
         const id = newTodos.length;
         const tmpNote = {
+          _id: res.data.message._id,
           id: id,
           label: title,
           description: description
         }
         newTodos.push(tmpNote);
+        localStorage.setItem("todos", JSON.stringify(newTodos));
         setTodos(newTodos);
       })
       .catch(err => console.log(err));
