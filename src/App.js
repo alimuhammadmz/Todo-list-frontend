@@ -1,30 +1,27 @@
 import './App.css';
 import Header from "./components/Header";
+import AddNote from './components/AddNote';
 import Todos from './components/Todos';
 import Footer from './components/Footer';
-import React, { useState } from 'react';
-import addNote from './components/AddNote';
-import AddNote from './components/AddNote';
+import About from './components/About';
+import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
 
 function App() {
-  //implementation of useState hook
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      label: "Do assignment",
-      description: "I have to do my college assignment."
-    },
-    {
-      id: 2,
-      label: "Do grocery",
-      description: "I have to do my grocery."
-    },
-    {
-      id: 3,
-      label: "Do cleaning",
-      description: "I have to clean my room."
-    },
-  ]);
+  let initTodo = [];
+  if (localStorage.getItem("todos")) {
+    initTodo = JSON.parse(localStorage.getItem("todos"));
+  }
+
+  //implementation of useState & useEffect hook
+  const [todos, setTodos] = useState(initTodo);
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   const deleteNote = (targetTodo) => {
     const index = todos.findIndex((todo) => todo.id === targetTodo.id);
@@ -34,15 +31,41 @@ function App() {
       setTodos(newTodos);
     }
   }
+
+  const addNote = (title, description) => {
+    const newTodos = [...todos];
+    const id = newTodos.length;
+    const tmpNote = {
+      id: id,
+      label: title,
+      description: description
+    }
+    newTodos.push(tmpNote);
+    setTodos(newTodos);
+  }
   //implementation of useState hook
 
   return (
-    <>
+    <Router>
       <Header title="To-do List" searchBar={false} />
-      <Todos deleteNote={deleteNote} todos={todos} />
+      <Switch>
+        <Route exact path="/"
+          render={() => {
+            return (
+              <React.Fragment>
+                <AddNote addNote={addNote}></AddNote>
+                <Todos deleteNote={deleteNote} todos={todos} />
+              </React.Fragment>
+            )
+          }}
+        >
+        </Route>
+        <Route exact path="/about">
+          <About />
+        </Route>
+      </Switch >
       <Footer />
-      {/* <AddNote></AddNote> */}
-    </>
+    </Router >
   );
 }
 
